@@ -1,3 +1,4 @@
+import 'package:arcitech_new/screens/add_task_screen.dart';
 import 'package:flutter/material.dart';
 
 class MyTasksScreen extends StatelessWidget {
@@ -33,13 +34,15 @@ class MyTasksScreen extends StatelessWidget {
               itemCount: 7,
               itemBuilder: (BuildContext context, int index) {
                 return Card(
-                  elevation: 0.0,borderOnForeground: true,shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0.0), // Rounded corners
-                  side: BorderSide(
-                    color: Colors.grey, // Border color
-                    width: 2.0, // Border width
+                  elevation: 0.0,
+                  borderOnForeground: true,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0.0), // Rounded corners
+                    side: BorderSide(
+                      color: Colors.grey, // Border color
+                      width: 2.0, // Border width
+                    ),
                   ),
-                ),
                   margin:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   child: ListTile(
@@ -52,7 +55,9 @@ class MyTasksScreen extends StatelessWidget {
                             Icons.delete_forever_outlined,
                             color: Colors.red,
                           ),
-                          SizedBox(width: 12.0,),
+                          SizedBox(
+                            width: 12.0,
+                          ),
                           Icon(
                             Icons.mode_edit_outline_outlined,
                             color: Colors.blue,
@@ -86,7 +91,10 @@ class MyTasksScreen extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: ElevatedButton(
-              onPressed: () async {},
+              onPressed: () async {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AddTaskScreen()));
+              },
               style: ElevatedButton.styleFrom(
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.zero, // Rectangular shape

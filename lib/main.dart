@@ -1,4 +1,4 @@
-import 'package:arcitech_new/bloc/login_bloc.dart';
+import 'package:arcitech_new/bloc/login/login_bloc.dart';
 import 'package:arcitech_new/screens/add_task_screen.dart';
 import 'package:arcitech_new/screens/all_tasks_screen.dart';
 import 'package:arcitech_new/screens/login_screen.dart';

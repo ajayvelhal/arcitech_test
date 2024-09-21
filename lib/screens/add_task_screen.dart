@@ -1,97 +1,141 @@
+import 'dart:math';
+
+import 'package:arcitech_new/bloc/task/task_bloc.dart';
+import 'package:arcitech_new/bloc/task/task_event.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../bloc/task/task_state.dart';
 
 class AddTaskScreen extends StatelessWidget {
-  const AddTaskScreen({super.key});
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController descController = TextEditingController();
+
+  AddTaskScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.teal,
-        title: const Text(
-          "Create / Edit Post",
-          style: TextStyle(color: Colors.white),
+    return BlocProvider(
+      create: (context) => TaskBloc(),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.teal,
+          title: const Text(
+            "Create / Edit Post",
+            style: TextStyle(color: Colors.white),
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              keyboardType: TextInputType.emailAddress,
-              cursorColor: Colors.black,
-              textInputAction: TextInputAction.search,
-              decoration: InputDecoration(
-                fillColor: Colors.grey[400],
-                filled: true,
-                focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey)),
-                enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey)),
-                errorBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.red)),
-                focusedErrorBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red),
+        body: BlocConsumer<TaskBloc, TaskState>(
+          listener: (BuildContext context, state) {
+            if(state is TaskCreationError){
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Please enter ${state.errorMessage}'),
                 ),
-                border: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue)),
-                disabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue)),
-                hintText: 'Title',
-                hintStyle: const TextStyle(color: Colors.black),
-              ),
-              style: const TextStyle(color: Colors.black),
-            ),
-          ),
-          const SizedBox(
-            height: 12.0,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              keyboardType: TextInputType.emailAddress,
-              cursorColor: Colors.black,
-              decoration: InputDecoration(
-                fillColor: Colors.grey[400],
-                filled: true,
-                focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey)),
-                enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey)),
-                errorBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.red)),
-                focusedErrorBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                border: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue)),
-                disabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue)),
-                hintText: 'Description',
-                hintStyle: const TextStyle(color: Colors.black),
-              ),
-              style: const TextStyle(color: Colors.black),
-            ),
-          ),
-          const SizedBox(height: 12.0),
-          ElevatedButton(
-            onPressed: () async {},
-            style: ElevatedButton.styleFrom(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero, // Rectangular shape
-              ),
-              foregroundColor: Colors.black,
-              backgroundColor: Colors.teal, // foreground
-            ),
-            child: const Text(
-              "Create Task",
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
+              );
+            }
+            else{
+              Navigator.pop(context);
+            }
+
+          },
+          builder: (BuildContext context, state) {
+            if (state is TaskLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      keyboardType: TextInputType.emailAddress,
+                      cursorColor: Colors.black,
+                      textInputAction: TextInputAction.search,
+                      controller: titleController,
+                      decoration: InputDecoration(
+                        fillColor: Colors.grey[400],
+                        filled: true,
+                        focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey)),
+                        enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey)),
+                        errorBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red)),
+                        focusedErrorBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red),
+                        ),
+                        border: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue)),
+                        disabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue)),
+                        hintText: 'Title',
+                        hintStyle: const TextStyle(color: Colors.black),
+                      ),
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      keyboardType: TextInputType.emailAddress,
+                      cursorColor: Colors.black,
+                      controller: descController,
+                      decoration: InputDecoration(
+                        fillColor: Colors.grey[400],
+                        filled: true,
+                        focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey)),
+                        enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey)),
+                        errorBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red)),
+                        focusedErrorBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red),
+                        ),
+                        border: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue)),
+                        disabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue)),
+                        hintText: 'Description',
+                        hintStyle: const TextStyle(color: Colors.black),
+                      ),
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  const SizedBox(height: 12.0),
+                  ElevatedButton(
+                    onPressed: () async {
+
+                      BlocProvider.of<TaskBloc>(context).add(CreateTask(
+                          titleController.text,
+                          descController.text,
+                          Random().nextBool()));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero, // Rectangular shape
+                      ),
+                      foregroundColor: Colors.black,
+                      backgroundColor: Colors.teal, // foreground
+                    ),
+                    child: const Text(
+                      "Create Task",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              );
+            }
+          },
+        ),
       ),
     );
   }

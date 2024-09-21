@@ -1,9 +1,10 @@
-import 'package:arcitech_new/bloc/login_bloc.dart';
-import 'package:arcitech_new/bloc/login_state.dart';
+import 'package:arcitech_new/bloc/login/login_bloc.dart';
+import 'package:arcitech_new/bloc/login/login_state.dart';
 import 'package:arcitech_new/screens/all_tasks_screen.dart';
+import 'package:arcitech_new/screens/my_tasks_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/login_event.dart';
+import '../bloc/login/login_event.dart';
 import '../utils/validators.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -34,7 +35,7 @@ class LoginScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              const AllTasksScreen()));
+                              const MyTasksScreen()));
                 }
               },
               builder: (BuildContext context, Object? state) {
