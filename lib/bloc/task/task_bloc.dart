@@ -1,6 +1,7 @@
 import 'package:arcitech_new/bloc/task/task_event.dart';
 import 'package:arcitech_new/bloc/task/task_state.dart';
 import 'package:arcitech_new/models/task_creation_response.dart';
+import 'package:arcitech_new/models/task_response.dart';
 import 'package:arcitech_new/respository/task_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -29,6 +30,18 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
           } else {
             emit(TaskCreationError(response.message ?? ""));
           }
+        }
+      }
+
+      if(event is FetchTask){
+        emit(TaskLoading());
+        TaskResponse response = await _taskRepository.fetchTasks();
+
+        if(response.status == 200){
+          emit(TasksFetchedSuccessfully(response));
+        }
+        else{
+          emit(TaskCreationError(response.message ?? ""));
         }
       }
     });
