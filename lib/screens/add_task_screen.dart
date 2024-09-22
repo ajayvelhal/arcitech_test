@@ -8,10 +8,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/task/task_state.dart';
 
 class AddTaskScreen extends StatelessWidget {
+  final String? title, description;
+  final bool? isCompleted;
+  final int? taskId;
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descController = TextEditingController();
 
-  AddTaskScreen({super.key});
+  AddTaskScreen(
+      {super.key,
+      this.title,
+      this.description,
+      this.isCompleted,
+      this.taskId}) {
+    titleController.text = title ?? "";
+    descController.text = description ?? "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,17 +39,15 @@ class AddTaskScreen extends StatelessWidget {
         ),
         body: BlocConsumer<TaskBloc, TaskState>(
           listener: (BuildContext context, state) {
-            if(state is TaskCreationError){
+            if (state is TaskCreationError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Please enter ${state.errorMessage}'),
                 ),
               );
-            }
-            else{
+            } else {
               Navigator.pop(context);
             }
-
           },
           builder: (BuildContext context, state) {
             if (state is TaskLoading) {
@@ -113,11 +122,18 @@ class AddTaskScreen extends StatelessWidget {
                   const SizedBox(height: 12.0),
                   ElevatedButton(
                     onPressed: () async {
-
-                      BlocProvider.of<TaskBloc>(context).add(CreateTask(
-                          titleController.text,
-                          descController.text,
-                          Random().nextBool()));
+                      if (taskId == 0) {
+                        BlocProvider.of<TaskBloc>(context).add(CreateTask(
+                            titleController.text,
+                            descController.text,
+                            Random().nextBool()));
+                      } else {
+                        BlocProvider.of<TaskBloc>(context).add(EditTask(
+                            taskId!,
+                            titleController.text,
+                            descController.text,
+                            Random().nextBool()));
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       shape: const RoundedRectangleBorder(

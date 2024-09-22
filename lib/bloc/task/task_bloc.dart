@@ -5,6 +5,8 @@ import 'package:arcitech_new/models/task_response.dart';
 import 'package:arcitech_new/respository/task_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../models/all_task_response.dart';
+
 class TaskBloc extends Bloc<TaskEvent, TaskState> {
   final TaskRepository _taskRepository = TaskRepository();
 
@@ -33,14 +35,46 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         }
       }
 
-      if(event is FetchTask){
+      if (event is EditTask) {
+        if (event.title.isEmpty) {
+          emit(TaskCreationError("Title"));
+        } else if (event.description.isEmpty) {
+          emit(TaskCreationError("Description"));
+        } else {
+          emit(TaskLoading());
+          Map<String, dynamic> requestBody = {
+            "title": event.title,
+            "description": event.description,
+            "completed": event.isCompleted
+          };
+          TaskCreationResponse response =
+              await _taskRepository.updateTask(event.id, requestBody);
+
+          if (response.status == 200) {
+            emit(TaskCreatedUpdatedSuccessfully(response));
+          } else {
+            emit(TaskCreationError(response.message ?? ""));
+          }
+        }
+      }
+      if (event is FetchTask || event is RefreshTask) {
         emit(TaskLoading());
         TaskResponse response = await _taskRepository.fetchTasks();
 
-        if(response.status == 200){
+        if (response.status == 200) {
           emit(TasksFetchedSuccessfully(response));
+        } else {
+          emit(TaskCreationError(response.message ?? ""));
         }
-        else{
+      }
+
+      if (event is FetchOtherUsersTask) {
+        emit(TaskLoading());
+        AllTaskResponse response = await _taskRepository.fetchOtherUsersTasks();
+
+        if (response.status == 200) {
+          emit(AllTasksFetchedSuccessfully(response));
+        } else {
           emit(TaskCreationError(response.message ?? ""));
         }
       }

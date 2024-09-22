@@ -1,3 +1,4 @@
+import 'package:arcitech_new/models/all_task_response.dart';
 import 'package:arcitech_new/models/task_creation_response.dart';
 import 'package:arcitech_new/models/task_response.dart';
 
@@ -12,6 +13,12 @@ class TasksFetchedSuccessfully extends TaskState{
   final TaskResponse response;
 
   TasksFetchedSuccessfully(this.response);
+}
+
+class AllTasksFetchedSuccessfully extends TaskState{
+  final AllTaskResponse response;
+
+  AllTasksFetchedSuccessfully(this.response);
 }
 class TaskCreatedUpdatedSuccessfully extends TaskState{
   final TaskCreationResponse response;

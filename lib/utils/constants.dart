@@ -4,5 +4,6 @@ class AppConstants{
 
   static const String signUpAndLogin = "/signup-login/";
   static const String tasks = "/tasks/";
+  static const String allTasks = "/tasks/other/";
 
 }

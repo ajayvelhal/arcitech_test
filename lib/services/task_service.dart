@@ -3,6 +3,7 @@ import 'package:arcitech_new/models/task_response.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/all_task_response.dart';
 import '../utils/constants.dart';
 
 class TaskService {
@@ -27,12 +28,16 @@ class TaskService {
     return creationResponse;
   }
 
-  Future<TaskCreationResponse> updateTask(
+  Future<TaskCreationResponse> updateTask(int id,
       Map<String, dynamic> requestBody) async {
     TaskCreationResponse creationResponse = TaskCreationResponse();
     try {
+      sharedPreferences = await SharedPreferences.getInstance();
       dio.options.baseUrl = AppConstants.kBaseUrl;
-      final resp = await dio.put(AppConstants.tasks, data: requestBody);
+      dio.options.headers = {
+        "Authorization": "Bearer ${sharedPreferences.get("auth_token")}"
+      };
+      final resp = await dio.put("${AppConstants.tasks}/$id/", data: requestBody);
       creationResponse = TaskCreationResponse.fromJson(resp.data);
     } catch (e) {
       creationResponse.status = 500;
@@ -59,4 +64,24 @@ class TaskService {
     }
     return taskResponse;
   }
+
+  Future<AllTaskResponse> fetchOtherUsersTask() async {
+    AllTaskResponse taskResponse = AllTaskResponse();
+    try {
+      sharedPreferences = await SharedPreferences.getInstance();
+      dio.options.baseUrl = AppConstants.kBaseUrl;
+      dio.options.headers = {
+        "Authorization": "Bearer ${sharedPreferences.get("auth_token")}"
+      };
+      final resp = await dio.get(
+        AppConstants.allTasks,
+      );
+      taskResponse = AllTaskResponse.fromJson(resp.data);
+    } catch (e) {
+      taskResponse.status = 500;
+      taskResponse.message = e.toString();
+    }
+    return taskResponse;
+  }
+
 }
