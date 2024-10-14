@@ -73,12 +73,13 @@ class MyTasksScreen extends StatelessWidget {
                 children: [
                   RefreshIndicator(
                     onRefresh: () {
-                      BlocProvider.of<TaskBloc>(context).add(RefreshTask(TaskResponse()));
+                      BlocProvider.of<TaskBloc>(context)
+                          .add(RefreshTask(TaskResponse()));
                       return Future.value(false);
                     },
                     child: ListView.builder(
                         shrinkWrap: true,
-                        itemCount: state.response.data?.length ?? 0,
+                        itemCount: 20,
                         itemBuilder: (BuildContext context, int index) {
                           return Card(
                             elevation: 0.0,
@@ -143,10 +144,9 @@ class MyTasksScreen extends StatelessWidget {
                                 ),
                               ),
                               title:
-                                  Text(state.response.data?[index].title ?? ""),
+                                  Text("$index"),
                               subtitle: Text(
-                                  state.response.data?[index].description ??
-                                      ""),
+                                      "$index"),
                             ),
                           );
                         }),
@@ -162,8 +162,7 @@ class MyTasksScreen extends StatelessWidget {
                       },
                       style: ElevatedButton.styleFrom(
                         shape: const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.zero, // Rectangular shape
+                          borderRadius: BorderRadius.zero, // Rectangular shape
                         ),
                         foregroundColor: Colors.black,
                         backgroundColor: Colors.teal, // foreground
